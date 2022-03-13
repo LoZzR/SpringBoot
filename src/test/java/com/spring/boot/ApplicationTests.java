@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.sql.DataSource;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -19,6 +20,9 @@ class ApplicationTests {
 
 	@Autowired
 	private PersonService personService;
+
+	@Autowired
+	private DataSource ds;
 
 	@Test
 	void contextLoads() {
