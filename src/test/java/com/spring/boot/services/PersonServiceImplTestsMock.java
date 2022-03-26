@@ -18,7 +18,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyLong;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-@ExtendWith(MockitoExtension.class)
+//Not necessary for springboot
+//@ExtendWith(MockitoExtension.class)
 public class PersonServiceImplTestsMock {
 
     public static final Long PERSON_ID = 1L;
