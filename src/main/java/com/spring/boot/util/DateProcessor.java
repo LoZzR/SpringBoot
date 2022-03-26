@@ -1,17 +1,17 @@
 package com.spring.boot.util;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DateProcessor {
-    public static final String DATE_FORMAT= "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT= "yyyy-MM-dd";
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
 
-    public static LocalDateTime toDate(final String date) {
-        return LocalDateTime.parse(date, formatter);
+    public static LocalDate toDate(final String date) {
+        return LocalDate.parse(date, formatter);
     }
 
-    public static String toString(final LocalDateTime date){
+    public static String toString(final LocalDate date){
         return date.format(formatter);
     }
 }

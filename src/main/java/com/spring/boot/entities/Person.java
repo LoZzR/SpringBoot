@@ -1,10 +1,15 @@
 package com.spring.boot.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.spring.boot.util.DateProcessor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -14,36 +19,39 @@ import java.util.Objects;
                 query = "from Person p where p.firstName=:fn and p.lastName=:ln"),
                 @NamedQuery(name = Person.FIND_BY_LAST_NAME, query = "from Person p where p.lastName= ?1")
 })
-public class Person extends AbstractEntity {
+public class Person extends AbstractEntity{
 
     public static final String FIND_BY_COMPLETE_NAME =
             "findByCompleteName";
     public static final String FIND_BY_LAST_NAME = "findAllByLastName";
-    //@NotNull
-    //@Size(min = 3, max = 30)
-    @Column(nullable = true/*, unique = true*/)
+    @NotNull(groups = BasicValidation.class)
+    @Size(min = 3, max = 30, groups = BasicValidation.class)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    //@NotNull
-    @Size(min = 3, max = 30)
-    @Column(nullable = true)
+    @NotNull(groups = BasicValidation.class)
+    @Size(min = 3, max = 30, groups = BasicValidation.class)
+    @Column(nullable = false)
     private String firstName;
 
-    //@NotNull
-    @Size(min = 3, max = 30)
-    @Column(nullable = true)
+    @NotNull(groups = BasicValidation.class)
+    @Size(min = 3, max = 30, groups = BasicValidation.class)
+    @Column(nullable = false)
     private String lastName;
 
-    //@NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @NotNull
     @Size(min = 4, max = 50)
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String password;
 
-    //@NotNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = DateProcessor.DATE_FORMAT)
+    @NotNull(groups = BasicValidation.class)
+    @Column(nullable = false)
     @DateTimeFormat(pattern = DateProcessor.DATE_FORMAT)
-    @Column(nullable = true)
-    private LocalDateTime hiringDate;
+    private LocalDate hiringDate;
 
+    @JsonIgnore
     @Transient
     private String newPassword;
 
@@ -83,11 +91,11 @@ public class Person extends AbstractEntity {
         this.password = password;
     }
 
-    public LocalDateTime getHiringDate() {
+    public LocalDate getHiringDate() {
         return hiringDate;
     }
 
-    public void setHiringDate(LocalDateTime hiringDate) {
+    public void setHiringDate(LocalDate hiringDate) {
         this.hiringDate = hiringDate;
     }
 
@@ -107,7 +115,7 @@ public class Person extends AbstractEntity {
         var person = (Person) o;
         return Objects.equals(firstName, person.firstName) &&
                 Objects.equals(lastName, person.lastName) &&
-                Objects.equals(hiringDate.toLocalDate(), person.hiringDate.toLocalDate());
+                Objects.equals(hiringDate, person.hiringDate);
     }
 
     @Override
@@ -121,4 +129,6 @@ public class Person extends AbstractEntity {
                 username, firstName, lastName, hiringDate == null? "" : hiringDate.toString());
 
     }
+
+    public interface BasicValidation{}
 }
