@@ -40,7 +40,7 @@ public class Person extends AbstractEntity{
     private String lastName;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @NotNull
+    @NotNull(groups = BasicValidation.class)
     @Size(min = 4, max = 50)
     @Column(nullable = false)
     private String password;
