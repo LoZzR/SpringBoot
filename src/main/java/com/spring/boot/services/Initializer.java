@@ -23,23 +23,7 @@ public class Initializer {
 
     @PostConstruct
     public void init() {
-        logger.info(" -->> Starting database initialization...");
-        var person = new Person();
-        person.setUsername("sherlock.holmes");
-        person.setFirstName("Sherlock");
-        person.setLastName("Holmes");
-        person.setPassword("dudu");
-        person.setHiringDate(LocalDate.now());
-        personService.save(person);
 
-        person = new Person();
-        person.setUsername("jackson.brodie");
-        person.setFirstName("Jackson");
-        person.setLastName("Brodie");
-        person.setPassword("bagy");
-        person.setHiringDate(LocalDate.now());
-        personService.save(person);
-        logger.info(" -->> Database initialization finished.");
 
     }
 }
