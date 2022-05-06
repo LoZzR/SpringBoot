@@ -5,6 +5,7 @@ import com.spring.boot.exceptions.PersonsException;
 import com.spring.boot.services.PersonService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -15,6 +16,7 @@ import org.springframework.web.util.UriTemplate;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/persons/")
@@ -30,6 +32,17 @@ public class PersonController {
     @GetMapping
     public List<Person>  getAllPerson(){
         return new ArrayList<>(personService.findAll());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Person show(@PathVariable Long id) {
+        Optional<Person> personOpt = personService.findById(id);
+        if(personOpt.isPresent()) {
+            return personOpt.get();
+        } else {
+            throw new PersonsException(HttpStatus.NOT_FOUND, "Unable to find entry with id " + id );
+        }
     }
 
     @ResponseStatus(HttpStatus.CREATED)
