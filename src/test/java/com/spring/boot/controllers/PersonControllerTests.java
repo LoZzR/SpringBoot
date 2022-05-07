@@ -6,9 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +14,8 @@ import org.springframework.web.client.HttpMessageConverterExtractor;
 import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,5 +63,34 @@ public class PersonControllerTests {
                 () -> assertNotNull(person),
                 () -> assertEquals("irene.adler", person.getUsername())
         );
+    }
+
+    @Test
+    void shouldCreateAPersonUsingExchange() {
+        Person person = buildPerson("gigi.pedala", "Gigi", "Pedala", "1dooh2" );
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Person> postRequest = new HttpEntity<>(person, headers);
+        ResponseEntity<Person> responseEntity = restTemplate.exchange(baseUrl,
+                HttpMethod.POST, postRequest, Person.class);
+        Person newPerson = responseEntity.getBody();
+        assertAll(
+                () -> assertEquals(HttpStatus.CREATED, responseEntity.
+                        getStatusCode()),
+                () -> assertNotNull(newPerson),
+                () -> assertEquals(person.getUsername(), newPerson.
+                        getUsername()),
+                () -> assertNotNull(newPerson.getId())
+        );
+    }
+
+    private Person buildPerson(final String username, final String firstName, final String lastName, final String password) {
+        Person person = new Person();
+        person.setUsername(username);
+        person.setFirstName(firstName);
+        person.setLastName(lastName);
+        person.setPassword(password);
+        person.setHiringDate(LocalDate.now());
+        return person;
     }
 }
