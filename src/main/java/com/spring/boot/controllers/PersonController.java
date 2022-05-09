@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/persons/")
+@RequestMapping("/persons")
 public class PersonController {
 
     private PersonService personService;
@@ -46,8 +46,8 @@ public class PersonController {
     }
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
-    public void create(@Validated(Person.BasicValidation.class) @RequestBody Person person, BindingResult result, @Value("#{request.requestURL}")
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public Person create(@Validated(Person.BasicValidation.class) @RequestBody Person person, BindingResult result, @Value("#{request.requestURL}")
             StringBuffer originalUrl, HttpServletResponse response) {
         if (result.hasErrors()) {
             String errString = createErrorString(result);
@@ -56,6 +56,7 @@ public class PersonController {
         try {
             Person newPerson = personService.save(person);
             response.setHeader("Location", getLocationForUser(originalUrl, newPerson.getId()));
+            return newPerson;
         } catch (Exception e) {
             throw new PersonsException(HttpStatus.UNPROCESSABLE_ENTITY, e);
         }
