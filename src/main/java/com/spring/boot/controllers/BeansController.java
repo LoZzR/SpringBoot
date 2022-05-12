@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 
-@RestController
+@RestController("/beans")
 public class BeansController {
 
     @Autowired
     ApplicationContext ctx;
 
-    @GetMapping("/")
+    @GetMapping
     public String index() {
         StringBuilder sb = new StringBuilder("<html><body>");
         sb.append("Hello there dear developer, here are the beans you were looking for: </br>");
