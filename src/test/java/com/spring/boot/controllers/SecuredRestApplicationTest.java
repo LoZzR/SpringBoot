@@ -47,23 +47,20 @@ public class SecuredRestApplicationTest {
     }
 
     @Test
-    void shouldCreateAPerson() {
-        Person person = buildPerson("gigi.pedala", "Gigi", "Pedala",
-                "1dooh2" );
+    void shouldCreateAPersonUsingExchange() {
+        Person person = buildPerson("gigi.pedala", "Gigi", "Pedala", "1dooh2" );
         HttpHeaders headers = new HttpHeaders();
-
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Person> postRequest = new HttpEntity<>(person,
-                headers);
-        URI uri = testRestTemplate.postForLocation(baseUrl,
-                postRequest, Person.class);
-        assertNotNull(uri);
-        Person newPerson = testRestTemplate.getForObject
-                (uri, Person.class);
+        HttpEntity<Person> postRequest = new HttpEntity<>(person, headers);
+        ResponseEntity<Person> responseEntity = testRestTemplate.exchange(baseUrl,
+                HttpMethod.POST, postRequest, Person.class);
+        Person newPerson = responseEntity.getBody();
         assertAll(
+                () -> assertEquals(HttpStatus.CREATED, responseEntity.
+                        getStatusCode()),
                 () -> assertNotNull(newPerson),
-                () -> assertEquals(person.getUsername(),
-                        newPerson.getUsername()),
+                () -> assertEquals(person.getUsername(), newPerson.
+                        getUsername()),
                 () -> assertNotNull(newPerson.getId())
         );
     }
