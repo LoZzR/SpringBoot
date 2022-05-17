@@ -16,7 +16,7 @@ public class PersonServiceImpl implements PersonService {
     private PersonRepo personRepo;
 
     @Autowired
-    public PersonServiceImpl(PersonRepo personRepo) {
+    public PersonServiceImpl(PersonRepo personRepo, @Value("${spring.boot.test.field}") String justForTest) {
         this.personRepo = personRepo;
     }
 
